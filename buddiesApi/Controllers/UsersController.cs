@@ -23,19 +23,49 @@ namespace buddiesApi.Controllers
         [HttpGet]
         public ActionResult<List<User>> Get() => userService.Get();
 
-        [HttpPost("/create")]
+        [HttpGet("{id:length(24)}")]
+        public ActionResult<User> Get(string id) => userService.Get(id);
+
+        [HttpPost]
         public ActionResult<User> Create(User user)
         {
             SecuredPassword sp = ComputeHash(user.Password, GenerateSalt());
             user.Password = sp.HashedSaltedPassword;
             user.Salt = sp.Salt;
-            userService.Create(user);
             if (EmailExists(user.Email)) return new ConflictResult();
+            userService.Create(user);
             return new CreatedResult("users", user);
         }
 
-        [HttpPost]
+        [HttpDelete("{id:length(24)}")]
+        public ActionResult Delete(string id)
+        {
+            var user = userService.Get(id);
+            if (user == null) return new NotFoundResult();
+            userService.Remove(user);
+            return new NoContentResult();
+        }
 
+        [HttpPut("{id:length(24)}")]
+        public ActionResult Update(string id, User userIn)
+        {
+            var user = userService.Get(id);
+            if (user == null) return new NotFoundResult();
+            userService.Update(id, userIn);
+            return new NoContentResult();
+        }
+
+        [HttpPost("login")]
+        public ActionResult<User> Verify(VerifyingUser verifyingUser)
+        {
+            var user = userService.GetByEmail(verifyingUser.Email);
+            if (user == null) return new NotFoundResult();
+            var verifyingPassword =
+                ComputeHash(verifyingUser.Password, Convert.FromBase64String(user.Salt));
+            if (user.Password == verifyingPassword.HashedSaltedPassword)
+                return user;
+            return new UnauthorizedResult();
+        }
 
         private bool EmailExists(string email)
         {
