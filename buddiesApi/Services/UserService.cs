@@ -1,40 +1,36 @@
-﻿using buddiesApi.Models;
-using MongoDB.Driver;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using buddiesApi.Models;
+using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 
 namespace buddiesApi.Services
 {
-    public class UserService
+    public class UserService : Service<User>
     {
-        private readonly IMongoCollection<User> _users;
-
-        public UserService(IBuddiesDatabaseSettings settings)
+        public UserService(IBuddiesDbContext settings) : base(settings)
         {
-            var client = new MongoClient(settings.ConnectionString);
-            var database = client.GetDatabase(settings.DatabaseName);
-            _users = database.GetCollection<User>(settings.UsersCollectionName);
+            this.collection =
+                base.GetDatabase.GetCollection<User>(settings.UsersCollectionName);
         }
 
-        public List<User> Get() => _users.Find<User>(user => true).ToList();
+        public override void Create(User obj) => collection.InsertOne(obj);
 
-        public User Get(string id) =>
-            _users.Find<User>(user => user.Id == id).FirstOrDefault();
+        public override List<User> Get() => collection.Find<User>(u => true).ToList();
+
+        public override User Get(string id) =>
+            collection.Find<User>(u => u.Id == id).FirstOrDefault();
 
         public User GetByEmail(string email) =>
-            _users.Find<User>(user => user.Email == email).FirstOrDefault();
+            collection.Find<User>(u => u.Email == email).FirstOrDefault();
 
-        public User Create(User user)
-        {
-            _users.InsertOne(user);
-            return user;
-        }
+        public override void Remove(User newObj) =>
+            collection.DeleteOne<User>(u => u.Id == newObj.Id);
 
-        public void Update(string id, User userIn) =>
-            _users.ReplaceOne(user => user.Id == id, userIn);
+        public override void Remove(string id) =>
+            collection.DeleteOne<User>(u => u.Id == id);
 
-        public void Remove(User userIn) => _users.DeleteOne(user => user.Id == userIn.Id);
-
-        public void Remove(string id) => _users.DeleteOne(user => user.Id == id);
+        public override void Update(string id, User newObj) =>
+            collection.ReplaceOne<User>(u => u.Id == id, newObj);
     }
 }

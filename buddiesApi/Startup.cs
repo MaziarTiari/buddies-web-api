@@ -21,7 +21,8 @@ namespace buddiesApi
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        // This method gets called by the runtime. Use this method to add services to
+        // the container.
         public void ConfigureServices(IServiceCollection services)
         {
             // using System.Net;
@@ -34,28 +35,33 @@ namespace buddiesApi
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Buddies API", Version = "v1" });
+                c.SwaggerDoc(
+                    "v1", new OpenApiInfo { Title = "Buddies API", Version = "v1" }
+                );
             });
 
-            services.Configure<BuddiesDatabaseSettings>(
-                Configuration.GetSection(nameof(BuddiesDatabaseSettings))
+            services.Configure<BuddiesDbContext>(
+                Configuration.GetSection(nameof(BuddiesDbContext))
             );
-            services.AddSingleton<IBuddiesDatabaseSettings>(sp =>
-                sp.GetRequiredService<IOptions<BuddiesDatabaseSettings>>().Value
+            services.AddSingleton<IBuddiesDbContext>(sp =>
+                sp.GetRequiredService<IOptions<BuddiesDbContext>>().Value
             );
             services.AddSingleton<UserService>();
+            services.AddSingleton<UserProfileService>();
             services.AddControllers()
                 .AddNewtonsoftJson(options => options.UseMemberCasing());
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        // This method gets called by the runtime. Use this method to configure
+        // the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             // using Microsoft.AspNetCore.HttpOverrides;
 
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+                ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
 
             app.UseAuthentication();

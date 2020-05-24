@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace buddiesApi.Helpers
 {
-    public static class SecurityHelper
+    public static class SecurityManager
     {
         public class SecuredPassword {
             public string HashedSaltedPassword { get; set; }
