@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using System.Collections.Generic;
 namespace buddiesApi.Models
 {
-    public class UserProfile
+    public class UserProfile : IMongoDbDocument
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]

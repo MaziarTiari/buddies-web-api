@@ -11,12 +11,13 @@ namespace buddiesApi.Controllers
     [ApiController]
     public class UsersController : CrudController<User, UserService>
     {
+        public UserService userService => (service as UserService);
         public UsersController(UserService userService) : base(userService) { }
 
         [HttpPost("login")]
         public ActionResult<User> Verify(VerifyingUser verifyingUser)
         {
-            var user = (service as UserService).GetByEmail(verifyingUser.Email);
+            var user = (service as UserService).Get(verifyingUser.Email);
             if (user == null) return new NotFoundResult();
             var verifyingPassword =
                 ComputeHash(verifyingUser.Password, Convert.FromBase64String(user.Salt));
@@ -28,6 +29,8 @@ namespace buddiesApi.Controllers
         [HttpPost]
         public override ActionResult<User> Create(User user)
         {
+            var userWithSameEmail = userService.Get(user.Email);
+            if (userWithSameEmail != null) return new ConflictResult();
             var secPass = ComputeHash(user.Password, GenerateSalt());
             user.Password = secPass.HashedSaltedPassword;
             user.Salt = secPass.Salt;
