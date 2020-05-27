@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using buddiesApi.Services;
 using Microsoft.AspNetCore.Mvc;
+using buddiesApi.Models;
 
 namespace buddiesApi.Controllers
 {
-    public abstract class CrudController<T,S> : ControllerBase
+    public abstract class CrudController<T,S> : ControllerBase where T : IMongoDbDocument
     {
         protected readonly Service<T> service;
 
