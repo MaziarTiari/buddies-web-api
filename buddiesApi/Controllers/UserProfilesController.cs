@@ -13,8 +13,17 @@ namespace buddiesApi.Controllers
     [ApiController]
     public class UserProfilesController: CrudController<UserProfile, UserProfileService>
     {
+        UserProfileService userProfileService => (service as UserProfileService);
+
         public UserProfilesController(UserProfileService userProfileService)
             : base(userProfileService) { }
 
+        [HttpGet("username/{username:string}")]
+        public ActionResult<UserProfile> GetByUsername(string username)
+        {
+            //var user = userProfileService.GetByUsername(username);
+            //if (user == null) return new NotFoundResult();
+            return userProfileService.GetByUsername(username);
+        }
     }
 }
