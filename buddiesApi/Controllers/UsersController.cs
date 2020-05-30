@@ -29,6 +29,7 @@ namespace buddiesApi.Controllers
         [HttpPost]
         public override ActionResult<User> Create(User user)
         {
+            user.Email = user.Email.ToLower();
             var userWithSameEmail = userService.Get(user.Email);
             if (userWithSameEmail != null) return new ConflictResult();
             var secPass = ComputeHash(user.Password, GenerateSalt());

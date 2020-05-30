@@ -18,12 +18,20 @@ namespace buddiesApi.Controllers
         public UserProfilesController(UserProfileService userProfileService)
             : base(userProfileService) { }
 
-        [HttpGet("username/{username:string}")]
+        [HttpGet("username/{username}")]
         public ActionResult<UserProfile> GetByUsername(string username)
         {
-            //var user = userProfileService.GetByUsername(username);
-            //if (user == null) return new NotFoundResult();
-            return userProfileService.GetByUsername(username);
+            return userProfileService.GetByUsername(username.ToLower());
+        }
+
+        [HttpPost]
+        public override ActionResult<UserProfile> Create(UserProfile userProfile)
+        {
+            userProfile.Username = userProfile.Username.ToLower();
+            var user = userProfileService.GetByUsername(userProfile.Username);
+            if(user != null) return new ConflictResult();
+            userProfileService.Create(userProfile);
+            return new CreatedResult("UserProfiles", userProfile);
         }
     }
 }

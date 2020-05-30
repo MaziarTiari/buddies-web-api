@@ -38,7 +38,7 @@ namespace buddiesApi.Controllers
         }
 
         [HttpPut("{id:length(24)}")]
-        public ActionResult Update(string id, T newObj)
+        public virtual ActionResult Update(string id, T newObj)
         {
             var user = service.Get(id);
             if (user == null) return new NotFoundResult();
