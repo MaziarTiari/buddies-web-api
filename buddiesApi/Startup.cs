@@ -9,6 +9,7 @@ using buddiesApi.Services;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.HttpOverrides;
 using System.Net;
+using Newtonsoft.Json.Serialization;
 
 namespace buddiesApi
 {
@@ -48,8 +49,10 @@ namespace buddiesApi
             );
             services.AddSingleton<UserService>();
             services.AddSingleton<UserProfileService>();
+            services.AddSingleton<CategoryService>();
             services.AddControllers()
-                .AddNewtonsoftJson(options => options.UseMemberCasing());
+                .AddNewtonsoftJson(options => options.UseCamelCasing(true));
+            
         }
 
         // This method gets called by the runtime. Use this method to configure

@@ -17,12 +17,17 @@ namespace buddiesApi.Controllers
         [HttpPost("login")]
         public ActionResult<User> Verify(VerifyingUser verifyingUser)
         {
-            var user = (service as UserService).Get(verifyingUser.Email);
-            if (user == null) return new NotFoundResult();
+            var user = service.Get(verifyingUser.Email.ToLower());
+            if (user == null)
+            {
+                return new NotFoundResult();
+            }
             var verifyingPassword =
-                ComputeHash(verifyingUser.Password, Convert.FromBase64String(user.Salt));
+                ComputeHash(verifyingUser.Password, ConvertStringSalt(user.Salt));
             if (user.Password == verifyingPassword.HashedSaltedPassword)
+            {
                 return user;
+            }
             return new UnauthorizedResult();
         }
 
@@ -32,9 +37,7 @@ namespace buddiesApi.Controllers
             user.Email = user.Email.ToLower();
             var userWithSameEmail = userService.Get(user.Email);
             if (userWithSameEmail != null) return new ConflictResult();
-            var secPass = ComputeHash(user.Password, GenerateSalt());
-            user.Password = secPass.HashedSaltedPassword;
-            user.Salt = secPass.Salt;
+            user = UserWithSecruredPassword(user);
             service.Create(user);
             return new CreatedResult("users", user);
         }

@@ -23,4 +23,10 @@ namespace buddiesApi.Models
         public string Salt { get; set; }
 
     }
+
+    public class VerifyingUser
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
+    }
 }

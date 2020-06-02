@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography;
+using buddiesApi.Models;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace buddiesApi.Helpers
@@ -33,6 +34,19 @@ namespace buddiesApi.Helpers
                 )
             );
             return sp;
+        }
+
+        public static byte[] ConvertStringSalt(string salt)
+        {
+            return Convert.FromBase64String(salt);
+        }
+
+        public static User UserWithSecruredPassword(User user)
+        {
+            SecuredPassword secPass = ComputeHash(user.Password, GenerateSalt());
+            user.Password = secPass.HashedSaltedPassword;
+            user.Salt = secPass.Salt;
+            return user;
         }
 
         public static byte[] GenerateSalt()

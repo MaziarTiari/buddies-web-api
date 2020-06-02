@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using buddiesApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using buddiesApi.Models;
+using MongoDB.Driver;
 
 namespace buddiesApi.Controllers
 {
@@ -40,10 +41,20 @@ namespace buddiesApi.Controllers
         [HttpPut("{id:length(24)}")]
         public virtual ActionResult Update(string id, T newObj)
         {
-            var user = service.Get(id);
-            if (user == null) return new NotFoundResult();
-            service.Update(id, newObj);
-            return new NoContentResult();
+            try
+            {
+                var result = service.Update(id, newObj);
+                if(result.IsModifiedCountAvailable && result.ModifiedCount > 0)
+                {
+                    return new NoContentResult();
+                } else
+                {
+                    return new NotFoundResult();
+                }
+            } catch(Exception)
+            {
+                return new StatusCodeResult(405);
+            }
         }
     }
 }

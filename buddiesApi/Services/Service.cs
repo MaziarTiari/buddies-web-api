@@ -16,7 +16,7 @@ namespace buddiesApi.Services
 
         public void Create(T obj);
 
-        public void Update(string identifier, T newObj);
+        public ReplaceOneResult Update(string identifier, T newObj);
 
         public void Remove(T newObj);
 
@@ -35,23 +35,35 @@ namespace buddiesApi.Services
             this.database = client.GetDatabase(settings.DatabaseName);
         }
 
-        protected MongoClient GetClient => this.client;
+        protected MongoClient GetClient => client;
 
-        protected IMongoDatabase GetDatabase => this.database;
+        protected IMongoDatabase GetDatabase => database;
 
-        public virtual void Create(T obj) => collection.InsertOne(obj);
+        public virtual void Create(T obj)
+        {
+            collection.InsertOne(obj);
+        }
 
-        public virtual List<T> Get() => collection.Find(u => true).ToList();
+        public virtual List<T> Get()
+        {
+            return collection.Find(u => true).ToList();
+        }
 
-        public virtual T Get(string id) =>
-            collection.Find(o => o.Id == id).FirstOrDefault();
+        public virtual T Get(string id)
+        {
+            return collection.Find(o => o.Id == id).FirstOrDefault();
+        }
 
-        public virtual void Remove(T newObj) =>
+        public virtual void Remove(T newObj)
+        {
             collection.DeleteOne(o => o.Id == newObj.Id);
+        }
 
         public virtual void Remove(string id) => collection.DeleteOne(o => o.Id == id);
 
-        public virtual void Update(string id, T newObj) =>
-            collection.ReplaceOne(o => o.Id == id, newObj);
+        public virtual ReplaceOneResult Update(string id, T newObj)
+        {
+            return collection.ReplaceOne(o => o.Id == id, newObj);
+        }
     }
 }

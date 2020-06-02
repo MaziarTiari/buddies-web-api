@@ -34,18 +34,26 @@ namespace buddiesApi.Models
 
         public string Info { get; set; }
 
-        public string EducationalInstitute { get; set; }
-
-        public string Company { get; set; }
-
         public string RelationshipState { get; set; }
 
-        public List<string> Jobs { get; set; }
+        public List<CategorizedInvolvement> Jobs { get; set; }
+
+        public List<CategorizedInvolvement> Hobbies { get; set; }
     }
 
-    public class VerifyingUser
+
+    public class CategorizedInvolvement : IMongoDbDocument
     {
-        public string Email { get; set; }
-        public string Password { get; set; }
+        [BsonId]
+        [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
+        public string Id { get; set; }
+
+        [BsonRequired]
+        public string Category { get; set; }
+
+        [BsonRequired]
+        public string Title { get; set; }
+
+        public string Place { get; set; }
     }
 }

@@ -12,7 +12,22 @@ namespace buddiesApi.Services
                 base.GetDatabase.GetCollection<User>(settings.UsersCollectionName);
         }
 
-        public override User Get(string email) =>
-            collection.Find<User>(u => u.Email == email).FirstOrDefault();
+        public override User Get(string email)
+        {
+            return collection.Find<User>(
+                u => u.Email == email.ToLower()).FirstOrDefault();
+        }
+
+        public override void Create(User obj)
+        {
+            obj.Email = obj.Email.ToLower();
+            base.Create(obj);
+        }
+
+        public override ReplaceOneResult Update(string id, User newObj)
+        {
+            newObj.Email = newObj.Email.ToLower();
+            return base.Update(id, newObj);
+        }
     }
 }

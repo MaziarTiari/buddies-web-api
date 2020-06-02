@@ -21,13 +21,12 @@ namespace buddiesApi.Controllers
         [HttpGet("username/{username}")]
         public ActionResult<UserProfile> GetByUsername(string username)
         {
-            return userProfileService.GetByUsername(username.ToLower());
+            return userProfileService.GetByUsername(username);
         }
 
         [HttpPost]
         public override ActionResult<UserProfile> Create(UserProfile userProfile)
         {
-            userProfile.Username = userProfile.Username.ToLower();
             var user = userProfileService.GetByUsername(userProfile.Username);
             if(user != null) return new ConflictResult();
             userProfileService.Create(userProfile);
