@@ -42,12 +42,8 @@ namespace buddiesApi.Models
     }
 
 
-    public class CategorizedInvolvement : IMongoDbDocument
+    public class CategorizedInvolvement
     {
-        [BsonId]
-        [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
-        public string Id { get; set; }
-
         [BsonRequired]
         public string Category { get; set; }
 
