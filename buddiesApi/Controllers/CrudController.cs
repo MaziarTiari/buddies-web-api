@@ -41,10 +41,10 @@ namespace buddiesApi.Controllers
         [HttpPut("{id:length(24)}")]
         public virtual ActionResult Update(string id, T newObj)
         {
+            var result = service.Update(id, newObj);
             try
             {
-                var result = service.Update(id, newObj);
-                if(result.IsModifiedCountAvailable && result.ModifiedCount > 0)
+                if(result.ModifiedCount > 0)
                 {
                     return new NoContentResult();
                 } else
