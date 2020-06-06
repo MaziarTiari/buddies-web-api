@@ -15,7 +15,7 @@ namespace buddiesApi.Models
         public string Title { get; set; }
 
         [BsonRequired]
-        public List<CategoryList> Categories { get; set; }
+        public CategoryList Categories { get; set; }
     }
 
     public class CategoryList
