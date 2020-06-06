@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using buddiesApi.Models;
 using buddiesApi.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,11 @@ namespace buddiesApi.Controllers
         {
         }
 
+        [HttpGet("{title}")]
+        public override ActionResult<Category> Get(string title)
+        {
+            return (service as CategoryService).Get(title);
+        }
 
     }
 }

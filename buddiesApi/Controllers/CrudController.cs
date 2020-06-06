@@ -20,7 +20,7 @@ namespace buddiesApi.Controllers
         public ActionResult<List<T>> Get() => service.Get();
 
         [HttpGet("{id:length(24)}")]
-        public ActionResult<T> Get(string id) => service.Get(id);
+        public virtual ActionResult<T> Get(string id) => service.Get(id);
 
         [HttpPost]
         public virtual ActionResult<T> Create(T obj)
