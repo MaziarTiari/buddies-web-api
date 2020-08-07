@@ -44,10 +44,11 @@ namespace buddiesApi.Controllers
             var result = service.Update(id, newObj);
             try
             {
-                if(result.ModifiedCount > 0)
+                if(result.MatchedCount > 0)
                 {
                     return new NoContentResult();
-                } else
+                }
+                else
                 {
                     return new NotFoundResult();
                 }
