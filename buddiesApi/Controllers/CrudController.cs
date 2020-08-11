@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using buddiesApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using buddiesApi.Models;
-using MongoDB.Driver;
 
 namespace buddiesApi.Controllers
 {
-    public abstract class CrudController<T,S> : ControllerBase where T : IMongoDbDocument
+    public abstract class CrudController<T,S>
+            : ControllerBase where T : IMongoDbDocument where S : IService<T>
     {
-        protected readonly Service<T> service;
+        protected readonly S service;
 
-        public CrudController(Service<T> service)
+        public CrudController(S service)
         {
             this.service = service;
         }
@@ -26,7 +26,7 @@ namespace buddiesApi.Controllers
         public virtual ActionResult<T> Create(T obj)
         {
             service.Create(obj);
-            return new CreatedResult(nameof(obj)+"s", obj);
+            return new CreatedResult(nameof(obj), obj);
         }
 
         [HttpDelete("{id:length(24)}")]

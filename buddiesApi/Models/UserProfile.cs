@@ -12,14 +12,16 @@ namespace buddiesApi.Models
         [BsonRequired]
         public string UserId { get; set; }
 
-        [BsonRequired]
-        public string Username { get; set; }
-
-        [BsonRequired]
-        public string Firstname { get; set; }
-
-        [BsonRequired]
-        public string Lastname { get; set; }
+        // TODO: remove ///////////////////////
+        [BsonRequired]                       //
+        public string Username { get; set; } //
+                                             //
+        [BsonRequired]                       //
+        public string Firstname { get; set; }//
+                                             //
+        [BsonRequired]                       //
+        public string Lastname { get; set; } //
+        /// ///////////////////////////////////
 
         [BsonRequired]
         public string City { get; set; }
@@ -36,20 +38,8 @@ namespace buddiesApi.Models
 
         public string RelationshipState { get; set; }
 
-        public List<CategorizedInvolvement> Jobs { get; set; }
+        public List<CategorizedTag> Jobs { get; set; }
 
-        public List<CategorizedInvolvement> Hobbies { get; set; }
-    }
-
-
-    public class CategorizedInvolvement
-    {
-        [BsonRequired]
-        public string Category { get; set; }
-
-        [BsonRequired]
-        public string Title { get; set; }
-
-        public string Place { get; set; }
+        public List<CategorizedTag> Hobbies { get; set; }
     }
 }

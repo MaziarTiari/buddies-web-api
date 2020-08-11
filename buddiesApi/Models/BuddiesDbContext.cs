@@ -8,6 +8,8 @@
         public string UsersCollectionName { get; set; }
         public string UserProfilesCollectionName { get; set; }
         public string CategoriesCollectionName { get; set; }
+        public string PhotoGalleriesCollectionName { get; set; }
+        public string ActivitiesCollectionName {get; set; }
     }
 
     public interface IBuddiesDbContext
@@ -18,5 +20,7 @@
         public string UsersCollectionName { get; set; }
         public string UserProfilesCollectionName { get; set; }
         public string CategoriesCollectionName { get; set; }
+        public string PhotoGalleriesCollectionName { get; set; }
+        public string ActivitiesCollectionName { get; set; }
     }
 }
