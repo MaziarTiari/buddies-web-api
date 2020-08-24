@@ -55,7 +55,7 @@ namespace buddiesApi {
                 builder
                 .AllowAnyMethod()
                 .AllowAnyHeader()
-                .WithOrigins("ws://40.113.114.86/");
+                .WithOrigins("ws://40.113.114.86");
             }));
 
         }
