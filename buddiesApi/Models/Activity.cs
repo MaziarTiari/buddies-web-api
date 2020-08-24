@@ -33,9 +33,9 @@ namespace buddiesApi.Models {
 
         public Image Image { get; set; }
 
-        public int StartDate { get; set; }
+        public long StartDate { get; set; }
 
-        public int EndDate { get; set; }
+        public long EndDate { get; set; }
 
         public int ApplicationDeadline { get; set; }
 
@@ -43,5 +43,17 @@ namespace buddiesApi.Models {
 
         [Range(0, int.MaxValue)]
         public int MaxMember { get; set; }
+    }
+
+    public class ActivityApply {
+        public string ApplicantId { get; set; }
+        public string ActivityId { get; set; }
+    }
+
+    public class OthersActivity : Activity, IUserAvatar {
+        public string Username { get; set; }
+        public string Firstname { get; set; }
+        public string Lastname { get; set; }
+        public Image Avatar { get; set; }
     }
 }

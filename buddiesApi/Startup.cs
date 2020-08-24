@@ -9,6 +9,7 @@ using buddiesApi.Services;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.HttpOverrides;
 using System.Net;
+using buddiesApi.Hubs;
 
 namespace buddiesApi {
     public class Startup {
@@ -47,6 +48,15 @@ namespace buddiesApi {
             services.AddSingleton<ActivityService>();
             services.AddControllers()
                 .AddNewtonsoftJson(options => options.UseCamelCasing(true));
+            services.AddSignalR();
+
+            services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
+            {
+                builder
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .WithOrigins("ws://192.168.2.126:5000");
+            }));
 
         }
 
@@ -54,6 +64,8 @@ namespace buddiesApi {
         // the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
             // using Microsoft.AspNetCore.HttpOverrides;
+
+            app.UseCors("CorsPolicy");
 
             app.UseForwardedHeaders(new ForwardedHeadersOptions {
                 ForwardedHeaders =
@@ -83,6 +95,8 @@ namespace buddiesApi {
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
+                endpoints.MapHub<ActivityHub>("/activityHub");
+                endpoints.MapHub<UserHub>("/userHub");
             });
         }
     }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using buddiesApi.Models;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 
 namespace buddiesApi.Services
 {
@@ -34,6 +35,19 @@ namespace buddiesApi.Services
         {
             newObj.Username = newObj.Username.ToLower();
             return base.Update(id, newObj);
+        }
+
+        public UserAvatar GetUserAvatar(string userId) {
+            var result = collection.AsQueryable()
+                .Where(u => u.UserId == userId)
+                .Select(e => new UserAvatar {
+                    UserId = e.UserId,
+                    Username = e.Username,
+                    Avatar = e.Avatar,
+                    Firstname = e.Firstname,
+                    Lastname = e.Lastname
+                });
+            return result.First();
         }
     }
 }

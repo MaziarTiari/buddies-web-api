@@ -30,5 +30,10 @@ namespace buddiesApi.Controllers
             service.Create(userProfile);
             return new CreatedResult("UserProfiles", userProfile);
         }
+
+        [HttpGet("userAvatar/{userId:length(24)}")]
+        public ActionResult<UserAvatar> GetUserAvatar(string userId) {
+            return service.GetUserAvatar(userId);
+        }
     }
 }
