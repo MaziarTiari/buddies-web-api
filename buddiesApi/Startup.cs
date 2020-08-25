@@ -46,18 +46,11 @@ namespace buddiesApi {
             services.AddSingleton<CategoryService>();
             services.AddSingleton<PhotoGalleryService>();
             services.AddSingleton<ActivityService>();
+            services.AddSignalR(hubOptions => {
+                hubOptions.EnableDetailedErrors = true;
+            });
             services.AddControllers()
                 .AddNewtonsoftJson(options => options.UseCamelCasing(true));
-            services.AddSignalR();
-
-            services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
-            {
-                builder
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .WithOrigins("ws://40.113.114.86");
-            }));
-
         }
 
         // This method gets called by the runtime. Use this method to configure
@@ -65,7 +58,14 @@ namespace buddiesApi {
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
             // using Microsoft.AspNetCore.HttpOverrides;
 
-            app.UseCors("CorsPolicy");
+            app.UseCors(builder => {
+                builder
+                 .AllowAnyOrigin()
+                 .AllowAnyHeader()
+                 .AllowAnyMethod();
+            });
+
+            app.UseRouting();
 
             app.UseForwardedHeaders(new ForwardedHeadersOptions {
                 ForwardedHeaders =
@@ -88,8 +88,6 @@ namespace buddiesApi {
             }
 
             //app.UseHttpsRedirection();
-
-            app.UseRouting();
 
             app.UseAuthorization();
 

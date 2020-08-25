@@ -33,11 +33,11 @@ namespace buddiesApi.Models {
 
         public Image Image { get; set; }
 
-        public long StartDate { get; set; }
+        public long? StartDate { get; set; }
 
-        public long EndDate { get; set; }
+        public long? EndDate { get; set; }
 
-        public int ApplicationDeadline { get; set; }
+        public long? ApplicationDeadline { get; set; }
 
         public List<CategorizedTag> Tags { get; set; }
 

@@ -13,5 +13,11 @@ namespace buddiesApi.Services {
         public override PhotoGallery Get(string userId) {
             return collection.Find(o => o.UserId == userId).FirstOrDefault();
         }
+
+        public ReplaceOneResult AddImage(string galleryId, ProfileImage image) {
+            var gallery = collection.Find(g => g.Id == galleryId).FirstOrDefault();
+            gallery.Images.Add(image);
+            return collection.ReplaceOne(g => g.Id == galleryId, gallery);
+        }
     }
 }

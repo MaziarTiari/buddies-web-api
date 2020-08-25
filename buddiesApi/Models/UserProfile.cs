@@ -25,7 +25,7 @@ namespace buddiesApi.Models
         public string City { get; set; }
 
         [BsonRequired]
-        public int BirthDate { get; set; }
+        public long BirthDate { get; set; }
 
         [BsonRequired]
         public string Sex { get; set; }

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using buddiesApi.Models;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -27,11 +26,13 @@ namespace buddiesApi.Models
         public string UserId { get; set; }
 
         [BsonRequired]
-        public int UploadedDate { get; set; }
+        public long CreatedAt { get; set; }
 
-        public string Location { get; set; }
+        public long? UpdatedAt { get; set; }
 
-        public int Date { get; set; }
+        public long? EventDate { get; set; }
+
+        public string Location { get; set; }        
 
         public string Description { get; set; }
     }
