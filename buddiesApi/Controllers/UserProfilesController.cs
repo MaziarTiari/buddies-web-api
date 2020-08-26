@@ -1,4 +1,5 @@
-﻿using buddiesApi.Models;
+﻿using System.Collections.Generic;
+using buddiesApi.Models;
 using buddiesApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,7 +34,9 @@ namespace buddiesApi.Controllers
 
         [HttpGet("userAvatar/{userId:length(24)}")]
         public ActionResult<UserAvatar> GetUserAvatar(string userId) {
-            return service.GetUserAvatar(userId);
-        }
+            List<string> userIds = new List<string>();
+            userIds.Add(userId);
+            return service.GetUserAvatars(userIds)[0];
+        } 
     }
 }

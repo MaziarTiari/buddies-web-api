@@ -37,9 +37,9 @@ namespace buddiesApi.Services
             return base.Update(id, newObj);
         }
 
-        public UserAvatar GetUserAvatar(string userId) {
+        public List<UserAvatar> GetUserAvatars(List<string> userIds) {
             var result = collection.AsQueryable()
-                .Where(u => u.UserId == userId)
+                .Where(u => userIds.Contains(u.UserId))
                 .Select(e => new UserAvatar {
                     UserId = e.UserId,
                     Username = e.Username,
@@ -47,7 +47,7 @@ namespace buddiesApi.Services
                     Firstname = e.Firstname,
                     Lastname = e.Lastname
                 });
-            return result.First();
+            return result.ToList();
         }
     }
 }

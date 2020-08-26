@@ -41,7 +41,9 @@ namespace buddiesApi.Controllers {
 
         [HttpPost]
         public override ActionResult<Activity> Create(Activity activity) {
-            UserAvatar userAvatar = userProfileService.GetUserAvatar(activity.UserId);
+            List<string> userIds = new List<string>();
+            userIds.Add(activity.UserId);
+            UserAvatar userAvatar = userProfileService.GetUserAvatars(userIds)[0];
             OthersActivity othersActivity = new OthersActivity();
             List<string> activityPropNames = new List<string>();
             foreach (PropertyInfo p in typeof(Activity).GetProperties()) {
@@ -72,6 +74,18 @@ namespace buddiesApi.Controllers {
             hubContext.Clients
                 .Group(activity.UserId).SendAsync("newApplicant", apply.ApplicantId);
             return new NoContentResult();
+        }
+
+        [HttpGet("members/{activityId:length(24)}")]
+        public ActionResult<List<UserAvatar>> GetMembers(string activityId) {
+            Activity activity = service.Get(activityId);
+            return userProfileService.GetUserAvatars(activity.MemberUserIds);
+        }
+
+        [HttpGet("applicants/{activityId:length(24)}")]
+        public ActionResult<List<UserAvatar>> GetApplicants(string activityId) {
+            Activity activity = service.Get(activityId);
+            return userProfileService.GetUserAvatars(activity.ApplicantUserIds);
         }
     }
 }
