@@ -29,14 +29,14 @@ namespace buddiesApi.Controllers {
         }
 
         [HttpGet("exclude/{userId:length(24)}")]
-        public ActionResult<List<OthersActivity>> GetOthersActivities(string userId) {
-            return service.GetOthersActivities(userId);
+        public ActionResult<List<ForeignActivity>> GetForeignActivities(string userId) {
+            return service.GetForeignActivities(userId);
         }
 
         [HttpPut("{id:length(24)}")]
-        public override ActionResult Update(string id, Activity newObj) {
-            hubContext.Clients.Group(id).SendAsync("updateActivity", newObj);
-            return base.Update(id, newObj);
+        public override ActionResult Update(string id, Activity activity) {
+            hubContext.Clients.Group(id).SendAsync("updateActivity", activity);
+            return base.Update(id, activity);
         }
 
         [HttpPost]
@@ -44,7 +44,7 @@ namespace buddiesApi.Controllers {
             List<string> userIds = new List<string>();
             userIds.Add(activity.UserId);
             UserAvatar userAvatar = userProfileService.GetUserAvatars(userIds)[0];
-            OthersActivity othersActivity = new OthersActivity();
+            ForeignActivity othersActivity = new ForeignActivity();
             List<string> activityPropNames = new List<string>();
             foreach (PropertyInfo p in typeof(Activity).GetProperties()) {
                 activityPropNames.Add(p.Name);
@@ -64,15 +64,21 @@ namespace buddiesApi.Controllers {
         }
 
         [HttpPost("apply")]
-        public ActionResult Apply(ActivityApply apply) {
-            Activity activity = service.Get(apply.ActivityId);
+        public ActionResult Apply(ActivityRequest request) {
+            Activity activity = service.Get(request.ActivityId);
             if (activity == null) {
                 return new NotFoundResult();
+            } else if (activity.ApplicantUserIds.Contains(request.ApplicantId)) {
+                return new StatusCodeResult(900);
             }
-            activity.ApplicantUserIds.Add(apply.ApplicantId);
-            service.Update(activity.Id, activity);
-            hubContext.Clients
-                .Group(activity.UserId).SendAsync("newApplicant", apply.ApplicantId);
+            activity.ApplicantUserIds.Add(request.ApplicantId);
+            hubContext.Clients.Group(activity.UserId).SendAsync("newApplicant", request);
+            return base.Update(request.ActivityId, activity);
+        }
+
+        [HttpPost("hide")]
+        public ActionResult Hide(ActivityRequest request) {
+            service.HideActivity(request);
             return new NoContentResult();
         }
 
@@ -86,6 +92,32 @@ namespace buddiesApi.Controllers {
         public ActionResult<List<UserAvatar>> GetApplicants(string activityId) {
             Activity activity = service.Get(activityId);
             return userProfileService.GetUserAvatars(activity.ApplicantUserIds);
+        }
+
+        [HttpPost("accept/{activityId:length(24)}")]
+        public ActionResult AcceptAppllications(string activityId, List<string> userIds) {
+            Activity activity = service.Get(activityId);
+            if (activity == null) {
+                return new NotFoundResult();
+            }
+            userIds.ForEach(userId => {
+                activity.ApplicantUserIds.Remove(userId);
+                activity.MemberUserIds.Add(userId);
+            });
+            hubContext.Clients.Group(activityId).SendAsync("updateActivity", activity);
+            return base.Update(activityId, activity);
+        }
+
+        [HttpPost("deny/{activityId:length(24)}")]
+        public ActionResult DenyAppllications(string activityId, List<string> userIds) {
+            Activity activity = service.Get(activityId);
+            if (activity == null) {
+                return new NotFoundResult();
+            }
+            userIds.ForEach(userId => {
+                activity.ApplicantUserIds.Remove(userId);
+            });
+            return base.Update(activityId, activity);
         }
     }
 }

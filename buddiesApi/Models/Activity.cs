@@ -45,12 +45,12 @@ namespace buddiesApi.Models {
         public int MaxMember { get; set; }
     }
 
-    public class ActivityApply {
+    public class ActivityRequest {
         public string ApplicantId { get; set; }
         public string ActivityId { get; set; }
     }
 
-    public class OthersActivity : Activity, IUserAvatar {
+    public class ForeignActivity : Activity, IUserAvatar {
         public string Username { get; set; }
         public string Firstname { get; set; }
         public string Lastname { get; set; }

@@ -37,6 +37,11 @@ namespace buddiesApi.Controllers
             List<string> userIds = new List<string>();
             userIds.Add(userId);
             return service.GetUserAvatars(userIds)[0];
-        } 
+        }
+
+        [HttpPost("getUserAvatars")]
+        public ActionResult<List<UserAvatar>> GetUserAvatars(List<string> userIds) {
+            return service.GetUserAvatars(userIds);
+        }
     }
 }

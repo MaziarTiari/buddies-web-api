@@ -7,10 +7,18 @@ using Microsoft.AspNetCore.SignalR;
 namespace buddiesApi.Hubs {
     public class ActivityHub : Hub{
 
+        public async Task AddToActivityUserGroup(string groupName) {
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+        }
+
         public async Task AddToActivityGroups(List<string> groupNames) {
             foreach (string groupName in groupNames) {
                 await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
             }
+        }
+
+        public async Task RemoveFromActivityGroup(string groupName) {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
         }
 
         public Task UpdateActivity(Activity activity) {
