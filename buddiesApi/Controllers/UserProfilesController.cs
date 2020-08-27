@@ -14,7 +14,11 @@ namespace buddiesApi.Controllers
 
         [HttpGet("{userId:length(24)}")]
         public override ActionResult<UserProfile> Get(string userId) {
-            return base.Get(userId);
+            UserProfile userProfile = service.Get(userId);
+            if (userProfile == null) {
+                return new NotFoundResult();
+            }
+            return userProfile;
         }
 
         [HttpGet("username/{username}")]
