@@ -78,6 +78,9 @@ namespace buddiesApi.Controllers {
 
         [HttpPost("hide")]
         public ActionResult Hide(ActivityRequest request) {
+            if (request.ActivityId == null) {
+                return new BadRequestResult();
+            }
             service.HideActivity(request);
             return new NoContentResult();
         }
@@ -104,11 +107,12 @@ namespace buddiesApi.Controllers {
                 activity.ApplicantUserIds.Remove(userId);
                 activity.MemberUserIds.Add(userId);
             });
-            hubContext.Clients.Group(activityId).SendAsync("updateActivity", activity);
-            return base.Update(activityId, activity);
+            hubContext.Clients
+                .Group(activityId).SendAsync("updateActivity", activity);
+            return base.Update(activity.Id, activity);
         }
 
-        [HttpPost("deny/{activityId:length(24)}")]
+        [HttpPost("reject/{activityId:length(24)}")]
         public ActionResult DenyAppllications(string activityId, List<string> userIds) {
             Activity activity = service.Get(activityId);
             if (activity == null) {
@@ -117,7 +121,7 @@ namespace buddiesApi.Controllers {
             userIds.ForEach(userId => {
                 activity.ApplicantUserIds.Remove(userId);
             });
-            return base.Update(activityId, activity);
+            return base.Update(activity.Id, activity);
         }
     }
 }
