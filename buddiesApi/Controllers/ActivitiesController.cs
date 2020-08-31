@@ -72,7 +72,7 @@ namespace buddiesApi.Controllers {
                 return new StatusCodeResult(900);
             }
             activity.ApplicantUserIds.Add(request.ApplicantId);
-            hubContext.Clients.Group(activity.UserId).SendAsync("newApplicant", request);
+            _ = hubContext.Clients.Group(activity.Id).SendAsync("newApplicant", request);
             return base.Update(request.ActivityId, activity);
         }
 
@@ -121,6 +121,8 @@ namespace buddiesApi.Controllers {
             userIds.ForEach(userId => {
                 activity.ApplicantUserIds.Remove(userId);
             });
+            hubContext.Clients
+                .Group(activityId).SendAsync("updateActivity", activity);
             return base.Update(activity.Id, activity);
         }
     }

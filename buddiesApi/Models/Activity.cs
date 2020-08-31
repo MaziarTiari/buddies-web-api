@@ -18,9 +18,6 @@ namespace buddiesApi.Models {
         public string Title { get; set; }
 
         [BsonRequired]
-        public string Location { get; set; }
-
-        [BsonRequired]
         public List<string> MemberUserIds { get; set; }
 
         [BsonRequired]
@@ -28,6 +25,8 @@ namespace buddiesApi.Models {
 
         [BsonRequired]
         public int Visibility { get; set; }
+
+        public string Location { get; set; }
 
         public string Description { get; set; }
 
@@ -37,12 +36,21 @@ namespace buddiesApi.Models {
 
         public long? EndDate { get; set; }
 
+        public Time StartTime { get; set; }
+
+        public Time EndTime { get; set; }
+
         public long? ApplicationDeadline { get; set; }
 
         public List<CategorizedTag> Tags { get; set; }
 
         [Range(0, int.MaxValue)]
         public int MaxMember { get; set; }
+    }
+
+    public class Time {
+        public int Hour { get; set; }
+        public int Minute { get; set; }
     }
 
     public class ActivityRequest {

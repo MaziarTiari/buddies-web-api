@@ -25,11 +25,11 @@ namespace buddiesApi.Services {
         }
 
         public void HideActivity(ActivityRequest request) {
-            ActivityMeta meta = new ActivityMeta();
-            meta = activityMetaCollection
+            ActivityMeta meta = activityMetaCollection
                 .Find(a => a.UserId == request.ApplicantId)
                 .FirstOrDefault();
             if (meta == null) {
+                meta = new ActivityMeta();
                 meta.UserId = request.ApplicantId;
                 meta.HiddenActivityIds = new List<string>();
                 meta.HiddenActivityIds.Add(request.ActivityId);
@@ -64,12 +64,14 @@ namespace buddiesApi.Services {
                               Description = a.Description,
                               Title = a.Title,
                               ApplicationDeadline = a.ApplicationDeadline,
-                              EndDate = a.EndDate,
                               Image = a.Image,
                               Location = a.Location,
                               MaxMember = a.MaxMember,
                               MemberUserIds = a.MemberUserIds,
                               StartDate = a.StartDate,
+                              EndDate = a.EndDate,
+                              StartTime = a.StartTime,
+                              EndTime = a.EndTime,
                               Tags = a.Tags,
                               Visibility = a.Visibility,
                               UserId = a.UserId,
