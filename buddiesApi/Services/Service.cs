@@ -21,13 +21,13 @@ namespace buddiesApi.Services {
 
         protected IMongoCollection<T> collection;
 
-        protected MongoClient GetClient { get; }
+        protected MongoClient MongoClient { get; }
 
-        protected IMongoDatabase GetDatabase { get; }
+        protected IMongoDatabase Database { get; }
 
         public Service(IBuddiesDbContext settings) {
-            this.GetClient = new MongoClient(settings.ConnectionString);
-            this.GetDatabase = GetClient.GetDatabase(settings.DatabaseName);
+            MongoClient = new MongoClient(settings.ConnectionString);
+            Database = MongoClient.GetDatabase(settings.DatabaseName);
         }
 
         public virtual void Create(T obj) {

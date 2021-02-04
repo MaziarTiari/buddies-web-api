@@ -6,7 +6,7 @@ namespace buddiesApi.Services {
     public class PhotoGalleryService : Service<PhotoGallery> {
 
         public PhotoGalleryService(IBuddiesDbContext settings) : base(settings) {
-            collection = GetDatabase.GetCollection<PhotoGallery>(
+            collection = Database.GetCollection<PhotoGallery>(
                 settings.PhotoGalleriesCollectionName);
         }
 

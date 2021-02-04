@@ -10,7 +10,7 @@ namespace buddiesApi.Services
     {
         public UserProfileService(IBuddiesDbContext settings) : base(settings)
         {
-            this.collection = base.GetDatabase.GetCollection<UserProfile>(
+            this.collection = base.Database.GetCollection<UserProfile>(
                 settings.UserProfilesCollectionName);
         }
 

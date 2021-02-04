@@ -9,7 +9,7 @@ namespace buddiesApi.Services
         public UserService(IBuddiesDbContext settings) : base(settings)
         {
             this.collection =
-                base.GetDatabase.GetCollection<User>(settings.UsersCollectionName);
+                base.Database.GetCollection<User>(settings.UsersCollectionName);
         }
 
         public override User Get(string email)

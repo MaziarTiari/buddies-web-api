@@ -9,7 +9,7 @@ namespace buddiesApi.Services
     {
         public CategoryService(IBuddiesDbContext settings) : base(settings) 
         {
-            this.collection = base.GetDatabase.GetCollection<Category>(
+            this.collection = base.Database.GetCollection<Category>(
                 settings.CategoriesCollectionName);
         }
 

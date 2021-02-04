@@ -9,7 +9,6 @@ namespace buddiesApi.Controllers {
     [ApiController]
     public class UsersController : CrudController<User, UserService> {
 
-        public UserService userService => (service as UserService);
         public UsersController(UserService userService) : base(userService) { }
 
         [HttpPost("login")]
@@ -29,7 +28,7 @@ namespace buddiesApi.Controllers {
         [HttpPost]
         public override ActionResult<User> Create(User user) {
             user.Email = user.Email.ToLower();
-            var userWithSameEmail = userService.Get(user.Email);
+            var userWithSameEmail = service.Get(user.Email);
             if (userWithSameEmail != null) return new ConflictResult();
             user = UserWithSecruredPassword(user);
             service.Create(user);

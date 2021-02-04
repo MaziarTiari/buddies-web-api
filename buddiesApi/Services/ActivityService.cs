@@ -10,13 +10,13 @@ namespace buddiesApi.Services {
         private IMongoCollection<ActivityMeta> activityMetaCollection;
 
         public ActivityService(IBuddiesDbContext settings) : base(settings) {
-            collection = GetDatabase.GetCollection<Activity>(
+            collection = Database.GetCollection<Activity>(
                 settings.ActivitiesCollectionName);
 
-            userProfileCollection = GetDatabase.GetCollection<UserProfile>(
+            userProfileCollection = Database.GetCollection<UserProfile>(
                 settings.UserProfilesCollectionName);
 
-            activityMetaCollection = GetDatabase.GetCollection<ActivityMeta>(
+            activityMetaCollection = Database.GetCollection<ActivityMeta>(
                 settings.ActivityMetaCollectionName);
         }
 
