@@ -1,28 +1,31 @@
-﻿using buddiesApi.Models;
+﻿using buddiesApi.Middlewares.AuthenticationManager;
+using buddiesApi.Models;
 using buddiesApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static buddiesApi.Helpers.SecurityManager;
 
 namespace buddiesApi.Controllers {
 
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : CrudController<User, UserService> {
+        readonly IAuthenticationManager authenticationManager;
 
-        public UsersController(UserService userService) : base(userService) { }
+        public UsersController (
+                UserService userService,
+                IAuthenticationManager authenticationManager): base(userService)
+        {
+            this.authenticationManager = authenticationManager;
+        }
 
+        [AllowAnonymous]
         [HttpPost("login")]
-        public ActionResult<User> Verify(VerifyingUser verifyingUser) {
-            var user = service.Get(verifyingUser.Email.ToLower());
-            if (user == null) {
-                return new NotFoundResult();
-            }
-            var verifyingPassword =
-                ComputeHash(verifyingUser.Password, ConvertStringSalt(user.Salt));
-            if (user.Password == verifyingPassword.HashedSaltedPassword) {
-                return user;
-            }
-            return new UnauthorizedResult();
+        public ActionResult<User> SignIn(UserCred userCred) {
+            User user = service.Get(userCred.Email);
+            var token = authenticationManager.Authenticate(userCred, user);
+            return token == null ? Unauthorized() : Ok(token);
         }
 
         [HttpPost]

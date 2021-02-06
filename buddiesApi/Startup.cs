@@ -10,6 +10,11 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.HttpOverrides;
 using System.Net;
 using buddiesApi.Hubs;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using buddiesApi.Middlewares.AuthenticationManager;
+using AuthenticationManager = buddiesApi.Middlewares.AuthenticationManager.AuthenticationManager;
 
 namespace buddiesApi {
     public class Startup {
@@ -35,6 +40,25 @@ namespace buddiesApi {
                 );
             });
 
+            string JWTKey = Configuration["JWT:Secret"];
+
+            services.AddAuthentication(x => {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(x => {
+                    x.RequireHttpsMetadata = false;
+                    x.SaveToken = true;
+                    x.TokenValidationParameters = new TokenValidationParameters {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.ASCII.GetBytes(JWTKey)
+                        ),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
+                });
+
             services.Configure<BuddiesDbContext>(
                 Configuration.GetSection(nameof(BuddiesDbContext))
             );
@@ -51,6 +75,9 @@ namespace buddiesApi {
             });
             services.AddControllers()
                 .AddNewtonsoftJson(options => options.UseCamelCasing(true));
+            services.AddSingleton<IAuthenticationManager>(
+                new AuthenticationManager(JWTKey)
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure
@@ -73,6 +100,8 @@ namespace buddiesApi {
             });
 
             app.UseAuthentication();
+
+            app.UseAuthorization();
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();

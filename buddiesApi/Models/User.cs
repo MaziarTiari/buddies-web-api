@@ -23,7 +23,7 @@ namespace buddiesApi.Models
 
     }
 
-    public class VerifyingUser
+    public class UserCred
     {
         public string Email { get; set; }
         public string Password { get; set; }
