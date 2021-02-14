@@ -41,7 +41,7 @@ namespace buddiesApi.Helpers
             return Convert.FromBase64String(salt);
         }
 
-        public static User UserWithSecruredPassword(User user)
+        public static User SecureUsersPassword(User user)
         {
             SecuredPassword secPass = ComputeHash(user.Password, GenerateSalt());
             user.Password = secPass.HashedSaltedPassword;

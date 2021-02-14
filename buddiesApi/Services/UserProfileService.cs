@@ -6,12 +6,16 @@ using MongoDB.Driver.Linq;
 
 namespace buddiesApi.Services
 {
-    public class UserProfileService : Service<UserProfile>
+    public class UserProfileService : UserResourceService<UserProfile>
     {
         public UserProfileService(IBuddiesDbContext settings) : base(settings)
         {
             this.collection = base.Database.GetCollection<UserProfile>(
                 settings.UserProfilesCollectionName);
+        }
+
+        public override UserProfile Get(string userId) {
+            return collection.Find(o => o.UserId == userId).FirstOrDefault();
         }
 
         public UserProfile GetByUsername(string username)
@@ -20,21 +24,16 @@ namespace buddiesApi.Services
                 user => user.Username == username.ToLower()).FirstOrDefault();
         }
 
-        public override UserProfile Get(string userId)
+        public override void Create(UserProfile userProfile)
         {
-            return collection.Find(o => o.UserId == userId).FirstOrDefault();
+            userProfile.Username = userProfile.Username.ToLower();
+            base.Create(userProfile);
         }
 
-        public override void Create(UserProfile obj)
+        public override ReplaceOneResult Replace(string id, UserProfile userProfile)
         {
-            obj.Username = obj.Username.ToLower();
-            base.Create(obj);
-        }
-
-        public override ReplaceOneResult Update(string id, UserProfile newObj)
-        {
-            newObj.Username = newObj.Username.ToLower();
-            return base.Update(id, newObj);
+            userProfile.Username = userProfile.Username.ToLower();
+            return base.Replace(id, userProfile);
         }
 
         public List<UserAvatar> GetUserAvatars(List<string> userIds) {

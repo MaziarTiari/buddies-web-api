@@ -53,11 +53,6 @@ namespace buddiesApi.Models {
         public int Minute { get; set; }
     }
 
-    public class ActivityRequest {
-        public string ApplicantId { get; set; }
-        public string ActivityId { get; set; }
-    }
-
     public class ForeignActivity : Activity, IUserAvatar {
         public string Username { get; set; }
         public string Firstname { get; set; }

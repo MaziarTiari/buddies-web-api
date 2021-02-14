@@ -3,7 +3,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using buddiesApi.Models;
-using buddiesApi.Services;
 using Microsoft.IdentityModel.Tokens;
 using static buddiesApi.Helpers.SecurityManager;
 
@@ -19,15 +18,19 @@ namespace buddiesApi.Middlewares.AuthenticationManager {
             if (user == null || !IsCorrectPassword(userCred.Password, user)) {
                 return null;
             }
+            return CreateBearerToken(user);
+        }
+
+        public string CreateBearerToken(User user) {
             var tokenHandler = new JwtSecurityTokenHandler();
 
             var tokenKey = Encoding.ASCII.GetBytes(key);
 
             var tokenDescriptor = new SecurityTokenDescriptor {
                 Subject = new ClaimsIdentity(new Claim[] {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id)
+                    new Claim(ClaimTypes.NameIdentifier, user.Id),
                 }),
-
+                
                 Expires = DateTime.UtcNow.AddHours(1),
 
                 SigningCredentials = new SigningCredentials(
@@ -39,7 +42,7 @@ namespace buddiesApi.Middlewares.AuthenticationManager {
             return tokenHandler.WriteToken(token);
         }
 
-        private bool IsCorrectPassword(string password, User user) {
+        public bool IsCorrectPassword(string password, User user) {
             var verifyingSecret = ComputeHash(password, ConvertStringSalt(user.Salt));
             return verifyingSecret.HashedSaltedPassword == user.Password;
         }

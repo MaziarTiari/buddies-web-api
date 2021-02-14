@@ -21,21 +21,21 @@ namespace buddiesApi.Services {
         }
 
         public List<Activity> GetUsersActivities(string userId) {
-            return collection.Find(a => a.UserId == userId).ToList<Activity>();
+            return collection.Find(a => a.UserId == userId).ToList();
         }
 
-        public void HideActivity(ActivityRequest request) {
+        public void HideActivity(string activityId, string userId) {
             ActivityMeta meta = activityMetaCollection
-                .Find(a => a.UserId == request.ApplicantId)
+                .Find(a => a.UserId == userId)
                 .FirstOrDefault();
             if (meta == null) {
                 meta = new ActivityMeta();
-                meta.UserId = request.ApplicantId;
+                meta.UserId = userId;
                 meta.HiddenActivityIds = new List<string>();
-                meta.HiddenActivityIds.Add(request.ActivityId);
+                meta.HiddenActivityIds.Add(activityId);
                 activityMetaCollection.InsertOne(meta);
             } else {
-                meta.HiddenActivityIds.Add(request.ActivityId);
+                meta.HiddenActivityIds.Add(activityId);
                 activityMetaCollection.ReplaceOne(a => a.Id == meta.Id, meta);
             }
         }

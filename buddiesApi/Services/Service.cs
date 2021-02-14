@@ -10,7 +10,7 @@ namespace buddiesApi.Services {
 
         public void Create(T obj);
 
-        public ReplaceOneResult Update(string identifier, T newObj);
+        public ReplaceOneResult Replace(string identifier, T newObj);
 
         public void Remove(T newObj);
 
@@ -48,7 +48,7 @@ namespace buddiesApi.Services {
 
         public virtual void Remove(string id) => collection.DeleteOne(o => o.Id == id);
 
-        public virtual ReplaceOneResult Update(string id, T newObj) {
+        public virtual ReplaceOneResult Replace(string id, T newObj) {
             return collection.ReplaceOne(o => o.Id == id, newObj);
         }
     }

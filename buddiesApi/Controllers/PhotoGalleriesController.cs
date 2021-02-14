@@ -1,19 +1,21 @@
 ﻿using System;
 using buddiesApi.Models;
 using buddiesApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace buddiesApi.Controllers {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PhotoGalleriesController
-            : CrudController<PhotoGallery, PhotoGalleryService> {
+            : Controller<PhotoGallery, PhotoGalleryService> {
 
         public PhotoGalleriesController(PhotoGalleryService service) : base(service) { }
 
-        [HttpGet("{userId:length(24)}")]
-        public override ActionResult<PhotoGallery> Get(string userId) {
-            return base.Get(userId);
+        [HttpGet]
+        public ActionResult<PhotoGallery> GetUsersProfile() {
+            return Get(ClientsUserId);
         }
 
         [HttpPost("addImage/{galleryId:length(24)}")]

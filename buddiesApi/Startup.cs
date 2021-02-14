@@ -58,7 +58,6 @@ namespace buddiesApi {
                         ValidateAudience = false
                     };
                 });
-
             services.Configure<BuddiesDbContext>(
                 Configuration.GetSection(nameof(BuddiesDbContext))
             );
