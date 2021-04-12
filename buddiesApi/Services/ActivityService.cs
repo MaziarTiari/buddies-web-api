@@ -5,7 +5,7 @@ using MongoDB.Driver;
 using System.Linq;
 
 namespace buddiesApi.Services {
-    public class ActivityService : Service<Activity> {
+    public class ActivityService : UserResourceService<Activity> {
         private IMongoCollection<UserProfile> userProfileCollection;
         private IMongoCollection<ActivityMeta> activityMetaCollection;
 
@@ -20,18 +20,15 @@ namespace buddiesApi.Services {
                 settings.ActivityMetaCollectionName);
         }
 
-        public List<Activity> GetUsersActivities(string userId) {
-            return collection.Find(a => a.UserId == userId).ToList();
-        }
-
         public void HideActivity(string activityId, string userId) {
             ActivityMeta meta = activityMetaCollection
                 .Find(a => a.UserId == userId)
                 .FirstOrDefault();
             if (meta == null) {
-                meta = new ActivityMeta();
-                meta.UserId = userId;
-                meta.HiddenActivityIds = new List<string>();
+                meta = new ActivityMeta {
+                    UserId = userId,
+                    HiddenActivityIds = new List<string>()
+                };
                 meta.HiddenActivityIds.Add(activityId);
                 activityMetaCollection.InsertOne(meta);
             } else {

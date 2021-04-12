@@ -15,6 +15,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using buddiesApi.Middlewares.AuthenticationManager;
 using AuthenticationManager = buddiesApi.Middlewares.AuthenticationManager.AuthenticationManager;
+using MimeKit;
+using System.Threading.Tasks;
 
 namespace buddiesApi {
     public class Startup {
@@ -27,7 +29,7 @@ namespace buddiesApi {
         // This method gets called by the runtime. Use this method to add services to
         // the container.
         public void ConfigureServices(IServiceCollection services) {
-            // using System.Net;
+            string hostname = Configuration["Hostname"];
 
             services.Configure<ForwardedHeadersOptions>(options => {
                 options.KnownProxies.Add(IPAddress.Parse("10.0.0.100"));
@@ -36,7 +38,7 @@ namespace buddiesApi {
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc(
-                    "v1", new OpenApiInfo { Title = "Buddies API", Version = "v1" }
+                    "v1", new OpenApiInfo { Title = hostname + " API", Version = "v1" }
                 );
             });
 
@@ -46,10 +48,10 @@ namespace buddiesApi {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-                .AddJwtBearer(x => {
-                    x.RequireHttpsMetadata = false;
-                    x.SaveToken = true;
-                    x.TokenValidationParameters = new TokenValidationParameters {
+                .AddJwtBearer(options => {
+                    options.RequireHttpsMetadata = false;
+                    options.SaveToken = true;
+                    options.TokenValidationParameters = new TokenValidationParameters {
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(
                             Encoding.ASCII.GetBytes(JWTKey)
@@ -57,25 +59,68 @@ namespace buddiesApi {
                         ValidateIssuer = false,
                         ValidateAudience = false
                     };
+                    options.Events = new JwtBearerEvents {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+
+                            // If the request is for our hub...
+                            var path = context.HttpContext.Request.Path;
+                            if (!string.IsNullOrEmpty(accessToken) &&
+                                (path.StartsWithSegments("/chatHub"))) {
+                                // Read the token out of the query string
+                                context.Token = accessToken;
+                            }
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
+
             services.Configure<BuddiesDbContext>(
                 Configuration.GetSection(nameof(BuddiesDbContext))
             );
+
             services.AddSingleton<IBuddiesDbContext>(sp =>
                 sp.GetRequiredService<IOptions<BuddiesDbContext>>().Value
             );
+
             services.AddSingleton<UserService>();
+
             services.AddSingleton<UserProfileService>();
+
             services.AddSingleton<CategoryService>();
+
             services.AddSingleton<PhotoGalleryService>();
+
             services.AddSingleton<ActivityService>();
+
+            services.AddSingleton<ChatService>();
+
             services.AddSignalR(hubOptions => {
                 hubOptions.EnableDetailedErrors = true;
             });
+
             services.AddControllers()
                 .AddNewtonsoftJson(options => options.UseCamelCasing(true));
+
+            var smtpServer = Configuration
+                .GetSection(nameof(SmtServerConfig)).Get<SmtServerConfig>();
+
             services.AddSingleton<IAuthenticationManager>(
-                new AuthenticationManager(JWTKey)
+                new AuthenticationManager(
+                    new AuthenticationConfig {
+                        Key = JWTKey,
+                        Hostname = hostname,
+                        AdminMailboxAddress = new MailboxAddress(
+                            hostname,
+                            smtpServer.EmailAddress),
+                        SmtpServerConfig = {
+                            EmailAddress = smtpServer.EmailAddress,
+                            Password = smtpServer.Password,
+                            Portnumber = smtpServer.Portnumber,
+                            ServerAddress = smtpServer.ServerAddress
+                        }
+                    })
             );
         }
 
@@ -123,6 +168,7 @@ namespace buddiesApi {
                 endpoints.MapControllers();
                 endpoints.MapHub<ActivityHub>("/activityHub");
                 endpoints.MapHub<UserHub>("/userHub");
+                endpoints.MapHub<ChatHub>("/chatHub");
             });
         }
     }

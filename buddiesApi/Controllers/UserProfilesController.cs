@@ -9,7 +9,7 @@ namespace buddiesApi.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class UserProfilesController: Controller<UserProfile, UserProfileService>
+    public class UserProfilesController: CRUDController<UserProfile, UserProfileService>
     {
         public UserProfilesController(UserProfileService userProfileService)
             : base(userProfileService) { }
@@ -52,14 +52,12 @@ namespace buddiesApi.Controllers
 
         [HttpGet("user-avatar/{userId:length(24)}")]
         public ActionResult<UserAvatar> GetUserAvatar(string userId) {
-            List<string> userIds = new List<string>();
-            userIds.Add(userId);
-            return service.GetUserAvatars(userIds)[0];
+            return service.GetUserAvatars(new List<string>{ userId })[0];
         }
 
         [HttpPost("user-avatars")]
-        public ActionResult<List<UserAvatar>> GetUserAvatars(List<string> userIds) {
-            return service.GetUserAvatars(userIds);
+        public ActionResult<List<UserAvatar>> GetUserAvatars(GetUserAvatarsRequest req) {
+            return service.GetUserAvatars(req.UserIds);
         }
     }
 }

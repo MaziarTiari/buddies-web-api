@@ -11,15 +11,14 @@ namespace buddiesApi.Services
     {
         public UserService(IBuddiesDbContext settings) : base(settings)
         {
-            this.collection =
-                base.Database.GetCollection<User>(settings.UsersCollectionName);
+            collection = Database.GetCollection<User>(settings.UsersCollectionName);
         }
 
-        public UserResponceModel GetUser(string id)
+        public UserResponce GetUser(string id)
         {
             var query = collection.AsQueryable()
                 .Where(u => u.Id == id)
-                .Select(u => new UserResponceModel {
+                .Select(u => new UserResponce {
                     Id = u.Id, Email = u.Email, Phone = u.Phone
                 });
             return query.First();
@@ -35,10 +34,10 @@ namespace buddiesApi.Services
             base.Create(obj);
         }
 
-        public override ReplaceOneResult Replace(string id, User newObj)
+        public override ReplaceOneResult Update(string id, User newObj)
         {
             newObj.Email = newObj.Email.ToLower();
-            return base.Replace(id, newObj);
+            return base.Update(id, newObj);
         }
 
         public UpdateResult UpdateUserInfo(string id, UserInfo userInfo) {
@@ -54,7 +53,7 @@ namespace buddiesApi.Services
                 password,
                 SecurityManager.ConvertStringSalt(user.Salt));
             user.Password = sec.HashedSaltedPassword;
-            return base.Replace(user.Id, user);
+            return base.Update(user.Id, user);
         }
     }
 }

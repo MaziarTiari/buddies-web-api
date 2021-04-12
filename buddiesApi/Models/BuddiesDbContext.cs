@@ -11,6 +11,7 @@
         public string PhotoGalleriesCollectionName { get; set; }
         public string ActivitiesCollectionName {get; set; }
         public string ActivityMetaCollectionName { get; set; }
+        public string ChatCollectionName { get; set; }
     }
 
     public interface IBuddiesDbContext
@@ -24,5 +25,6 @@
         public string PhotoGalleriesCollectionName { get; set; }
         public string ActivitiesCollectionName { get; set; }
         public string ActivityMetaCollectionName { get; set; }
+        public string ChatCollectionName { get; set; }
     }
 }

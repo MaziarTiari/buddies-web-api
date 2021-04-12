@@ -6,7 +6,7 @@ using MongoDB.Driver.Linq;
 
 namespace buddiesApi.Services
 {
-    public class UserProfileService : UserResourceService<UserProfile>
+    public class UserProfileService : Service<UserProfile>
     {
         public UserProfileService(IBuddiesDbContext settings) : base(settings)
         {
@@ -30,10 +30,10 @@ namespace buddiesApi.Services
             base.Create(userProfile);
         }
 
-        public override ReplaceOneResult Replace(string id, UserProfile userProfile)
+        public override ReplaceOneResult Update(string id, UserProfile userProfile)
         {
             userProfile.Username = userProfile.Username.ToLower();
-            return base.Replace(id, userProfile);
+            return base.Update(id, userProfile);
         }
 
         public List<UserAvatar> GetUserAvatars(List<string> userIds) {

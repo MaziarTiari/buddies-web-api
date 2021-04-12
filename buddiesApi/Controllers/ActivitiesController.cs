@@ -12,7 +12,7 @@ namespace buddiesApi.Controllers {
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class ActivitiesController : Controller<Activity, ActivityService> {
+    public class ActivitiesController : CRUDController<Activity, ActivityService> {
 
         private IHubContext<ActivityHub> hubContext;
         private UserProfileService userProfileService;
@@ -27,7 +27,7 @@ namespace buddiesApi.Controllers {
 
         [HttpGet("my-activities")]
         public ActionResult<List<Activity>> GetUsersActivities() {
-            return service.GetUsersActivities(ClientsUserId);
+            return service.GetMany(ClientsUserId);
         }
 
         [HttpGet("offers")]

@@ -10,14 +10,14 @@ namespace buddiesApi.Services {
 
         public void Create(T obj);
 
-        public ReplaceOneResult Replace(string identifier, T newObj);
+        public ReplaceOneResult Update(string identifier, T newObj);
 
         public void Remove(T newObj);
 
         public void Remove(string identifier);
     }
 
-    public class Service<T> : IService<T> where T : IMongoDbDocument {
+    public abstract class Service<T> : IService<T> where T : IMongoDbDocument {
 
         protected IMongoCollection<T> collection;
 
@@ -48,7 +48,7 @@ namespace buddiesApi.Services {
 
         public virtual void Remove(string id) => collection.DeleteOne(o => o.Id == id);
 
-        public virtual ReplaceOneResult Replace(string id, T newObj) {
+        public virtual ReplaceOneResult Update(string id, T newObj) {
             return collection.ReplaceOne(o => o.Id == id, newObj);
         }
     }

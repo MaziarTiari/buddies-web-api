@@ -9,7 +9,7 @@ namespace buddiesApi.Controllers {
     [Route("api/[controller]")]
     [ApiController]
     public class PhotoGalleriesController
-            : Controller<PhotoGallery, PhotoGalleryService> {
+            : CRUDController<PhotoGallery, PhotoGalleryService> {
 
         public PhotoGalleriesController(PhotoGalleryService service) : base(service) { }
 

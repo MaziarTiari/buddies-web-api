@@ -8,7 +8,7 @@ namespace buddiesApi.Controllers {
     [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoriesController : Controller<Category, CategoryService> {
+    public class CategoriesController : CRUDController<Category, CategoryService> {
 
         public CategoriesController(CategoryService service) : base(service) { }
 

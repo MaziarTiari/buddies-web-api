@@ -14,13 +14,17 @@
     <Folder Include="Hubs\" />
     <Folder Include="Middlewares\" />
     <Folder Include="Middlewares\AuthenticationManager\" />
+    <Folder Include="Models\Chat\" />
+    <Folder Include="Models\PasswordValidator\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.4" />
-    <PackageReference Include="MongoDB.Driver" Version="2.10.4" />
+    <PackageReference Include="MongoDB.Driver" Version="2.11.6" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.4.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="5.4.1" />
     <PackageReference Include="Json.Net" Version="1.0.22" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.0" />
+    <PackageReference Include="MongoDB.DeepUpdater" Version="1.1.0" />
+    <PackageReference Include="MailKit" Version="2.10.1" />
   </ItemGroup>
 </Project>

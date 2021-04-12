@@ -3,7 +3,25 @@ using MongoDB.Bson.Serialization.Attributes;
 using System.Collections.Generic;
 namespace buddiesApi.Models
 {
-    public class UserProfile : IUsersDocument, IUserAvatar
+    public interface IUserProfile : IUsersDocument, IUserAvatar {
+        public string City { get; set; }
+
+        public long BirthDate { get; set; }
+
+        public string Sex { get; set; }
+
+        public List<string> Languages { get; set; }
+
+        public string Info { get; set; }
+
+        public string RelationshipState { get; set; }
+
+        public List<CategorizedTag> Jobs { get; set; }
+
+        public List<CategorizedTag> Hobbies { get; set; }
+    }
+
+    public class UserProfile : IUserProfile
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
@@ -61,5 +79,9 @@ namespace buddiesApi.Models
         public string Firstname { get; set; }
         public string Lastname { get; set; }
         public Image Avatar { get; set; }
+    }
+
+    public class GetUserAvatarsRequest {
+        public List<string> UserIds { get; set; }
     }
 }
